@@ -27,23 +27,221 @@ class ColorSchemeGenerator {
     }
     
     async fetchColorSchemes(hexColor) {
-        const schemes = ['monochrome', 'analogic', 'complement', 'triad', 'quad'];
-        const promises = schemes.map(scheme => 
-            fetch(`https://www.thecolorapi.com/scheme?hex=${hexColor}&mode=${scheme}&count=5`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => ({
-                    scheme: scheme,
-                    colors: data.colors
-                }))
-        );
+        try {
+            // Try to use the external API first
+            const schemes = ['monochrome', 'analogic', 'complement', 'triad', 'quad'];
+            const promises = schemes.map(scheme => 
+                fetch(`https://www.thecolorapi.com/scheme?hex=${hexColor}&mode=${scheme}&count=5`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => ({
+                        scheme: scheme,
+                        colors: data.colors
+                    }))
+            );
+            
+            const results = await Promise.all(promises);
+            return results;
+        } catch (error) {
+            // Fallback to local color generation if API fails
+            console.log('API failed, using local color generation');
+            return this.generateLocalColorSchemes(hexColor);
+        }
+    }
+    
+    generateLocalColorSchemes(hexColor) {
+        const baseColor = this.hexToHsl(hexColor);
+        const schemes = [
+            {
+                scheme: 'monochrome',
+                colors: this.generateMonochromeScheme(baseColor, hexColor)
+            },
+            {
+                scheme: 'analogic',
+                colors: this.generateAnalogicScheme(baseColor, hexColor)
+            },
+            {
+                scheme: 'complement',
+                colors: this.generateComplementScheme(baseColor, hexColor)
+            },
+            {
+                scheme: 'triad',
+                colors: this.generateTriadScheme(baseColor, hexColor)
+            },
+            {
+                scheme: 'quad',
+                colors: this.generateQuadScheme(baseColor, hexColor)
+            }
+        ];
         
-        const results = await Promise.all(promises);
-        return results;
+        return schemes;
+    }
+    
+    hexToHsl(hex) {
+        const r = parseInt(hex.slice(1, 3), 16) / 255;
+        const g = parseInt(hex.slice(3, 5), 16) / 255;
+        const b = parseInt(hex.slice(5, 7), 16) / 255;
+        
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+        
+        if (max === min) {
+            h = s = 0;
+        } else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+        
+        return { h: h * 360, s: s * 100, l: l * 100 };
+    }
+    
+    hslToHex(h, s, l) {
+        l /= 100;
+        const a = s * Math.min(l, 1 - l) / 100;
+        const f = n => {
+            const k = (n + h / 30) % 12;
+            const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+            return Math.round(255 * color).toString(16).padStart(2, '0');
+        };
+        return `#${f(0)}${f(8)}${f(4)}`;
+    }
+    
+    generateMonochromeScheme(baseColor, originalHex) {
+        const colors = [];
+        for (let i = 0; i < 5; i++) {
+            const lightness = Math.max(10, Math.min(90, baseColor.l + (i - 2) * 20));
+            const hex = this.hslToHex(baseColor.h, baseColor.s, lightness);
+            colors.push({
+                hex: { value: hex },
+                name: { value: this.generateColorName(hex) }
+            });
+        }
+        return colors;
+    }
+    
+    generateAnalogicScheme(baseColor, originalHex) {
+        const colors = [];
+        for (let i = 0; i < 5; i++) {
+            const hue = (baseColor.h + (i - 2) * 30) % 360;
+            const hex = this.hslToHex(hue, baseColor.s, baseColor.l);
+            colors.push({
+                hex: { value: hex },
+                name: { value: this.generateColorName(hex) }
+            });
+        }
+        return colors;
+    }
+    
+    generateComplementScheme(baseColor, originalHex) {
+        const colors = [];
+        const complementHue = (baseColor.h + 180) % 360;
+        
+        // Base color variations
+        for (let i = 0; i < 3; i++) {
+            const lightness = Math.max(20, Math.min(80, baseColor.l + (i - 1) * 25));
+            const hex = this.hslToHex(baseColor.h, baseColor.s, lightness);
+            colors.push({
+                hex: { value: hex },
+                name: { value: this.generateColorName(hex) }
+            });
+        }
+        
+        // Complement variations
+        for (let i = 0; i < 2; i++) {
+            const lightness = Math.max(20, Math.min(80, baseColor.l + i * 20));
+            const hex = this.hslToHex(complementHue, baseColor.s, lightness);
+            colors.push({
+                hex: { value: hex },
+                name: { value: this.generateColorName(hex) }
+            });
+        }
+        
+        return colors;
+    }
+    
+    generateTriadScheme(baseColor, originalHex) {
+        const colors = [];
+        const hues = [baseColor.h, (baseColor.h + 120) % 360, (baseColor.h + 240) % 360];
+        
+        for (let i = 0; i < 3; i++) {
+            const hex = this.hslToHex(hues[i], baseColor.s, baseColor.l);
+            colors.push({
+                hex: { value: hex },
+                name: { value: this.generateColorName(hex) }
+            });
+        }
+        
+        // Add variations
+        for (let i = 0; i < 2; i++) {
+            const hue = hues[i];
+            const lightness = Math.max(20, Math.min(80, baseColor.l + (i === 0 ? 20 : -20)));
+            const hex = this.hslToHex(hue, baseColor.s, lightness);
+            colors.push({
+                hex: { value: hex },
+                name: { value: this.generateColorName(hex) }
+            });
+        }
+        
+        return colors;
+    }
+    
+    generateQuadScheme(baseColor, originalHex) {
+        const colors = [];
+        const hues = [
+            baseColor.h,
+            (baseColor.h + 90) % 360,
+            (baseColor.h + 180) % 360,
+            (baseColor.h + 270) % 360
+        ];
+        
+        for (let i = 0; i < 4; i++) {
+            const hex = this.hslToHex(hues[i], baseColor.s, baseColor.l);
+            colors.push({
+                hex: { value: hex },
+                name: { value: this.generateColorName(hex) }
+            });
+        }
+        
+        // Add one variation
+        const hex = this.hslToHex(baseColor.h, Math.max(20, baseColor.s - 20), baseColor.l);
+        colors.push({
+            hex: { value: hex },
+            name: { value: this.generateColorName(hex) }
+        });
+        
+        return colors;
+    }
+    
+    generateColorName(hex) {
+        const colorNames = [
+            'Deep', 'Light', 'Dark', 'Bright', 'Muted', 'Vibrant', 'Soft', 'Bold',
+            'Warm', 'Cool', 'Rich', 'Pale', 'Intense', 'Subtle', 'Electric', 'Pastel'
+        ];
+        
+        const hsl = this.hexToHsl(hex);
+        let baseName = '';
+        
+        if (hsl.h >= 0 && hsl.h < 30) baseName = 'Red';
+        else if (hsl.h >= 30 && hsl.h < 60) baseName = 'Orange';
+        else if (hsl.h >= 60 && hsl.h < 120) baseName = 'Yellow';
+        else if (hsl.h >= 120 && hsl.h < 180) baseName = 'Green';
+        else if (hsl.h >= 180 && hsl.h < 240) baseName = 'Cyan';
+        else if (hsl.h >= 240 && hsl.h < 300) baseName = 'Blue';
+        else baseName = 'Purple';
+        
+        const adjective = colorNames[Math.floor(Math.random() * colorNames.length)];
+        return `${adjective} ${baseName}`;
     }
     
     displayColorSchemes(schemes) {
