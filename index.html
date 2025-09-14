@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Scheme Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Color Scheme Generator</h1>
+            <p>Select a color to generate a beautiful color scheme</p>
+        </header>
+        
+        <div class="color-picker-section">
+            <label for="colorPicker">Choose a color:</label>
+            <input type="color" id="colorPicker" value="#3498db">
+            <button id="generateBtn">Generate Scheme</button>
+        </div>
+        
+        <div class="color-scheme-container" id="colorSchemeContainer">
+            <!-- Color scheme will be displayed here -->
+        </div>
+        
+        <div class="instructions">
+            <p>Click on any color to copy its hex code to clipboard</p>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
