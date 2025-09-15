@@ -7,27 +7,40 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Color Scheme Generator</h1>
-            <p>Select a color to generate a beautiful color scheme</p>
-        </header>
-        
-        <div class="color-picker-section">
-            <label for="colorPicker">Choose a color:</label>
-            <input type="color" id="colorPicker" value="#3498db">
-            <button id="generateBtn">Generate Scheme</button>
+    <header></header>
+        <h1>Color Scheme Generator</h1>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="input_color">
+                <form id="input_color_form">
+                    <input aria-label="Color Picker" type="color" name="color" id="color_input" value="#ff0000">
+                    <select name="mode" id="mode_select">
+                        <option value="monochrome">Monochrome</option>
+                        <option value="monochrome-dark">Monochrome Dark</option>
+                        <option value="monochrome-light">Monochrome Light</option>
+                        <option value="analogic">Analogic</option>
+                        <option value="complement">Complement</option>
+                        <option value="analogic-complement">Analogic Complement</option>
+                        <option value="triad">Triad</option>
+                        <option value="quad">Quad</option>
+                    </select>
+                    <button id="get_colors_btn">Get Color Scheme</button>
+                </form>
+            </div>
+
+            <div class="display_color" id="display_color">
+                <!-- Colors will be displayed here -->
+
+            </div>
+
+            <div class="instructions">
+                <p>Select a color and a mode to generate a color scheme.</p>
+                <p>Click any color to copy its value.</p>
+            </div>
         </div>
-        
-        <div class="color-scheme-container" id="colorSchemeContainer">
-            <!-- Color scheme will be displayed here -->
-        </div>
-        
-        <div class="instructions">
-            <p>Click on any color to copy its hex code to clipboard</p>
-        </div>
-    </div>
-    
+    </main>
     <script src="script.js"></script>
 </body>
 </html>
