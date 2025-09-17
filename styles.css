@@ -22,8 +22,12 @@ body {
 
 @media (prefers-color-scheme: light) {
   :root {
-    --background: #f5f5f5;
-    --text-color: #222;
+    --background: #fff;
+    --text-color: #2B283A;
+    --input-color: #111827;
+    --btn-bg: #fff;
+    --select-hv: #fff;
+    --btn-border: #D1D5DB;
   }
 }
 
@@ -33,7 +37,8 @@ body {
     --background: #1F2937;
     --text-color: #fff;
     --input-color: #D5D4D8;
-    --btn-bg: #3D4B60
+    --btn-bg: #3D4B60;
+    --select-hv: #1F293A
   }
 }
 
@@ -83,7 +88,7 @@ select {
 
 select:hover,
 select:focus {
-  background: #1F293A;
+  background: var(--select-hv);
 }
 
 select::picker-icon {
@@ -133,7 +138,7 @@ option::checkmark {
   background: var(--btn-bg);
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
   border-radius: 4px;
-  border: 1px solid var(--btn-bg);
+  border: 1px solid var(--btn-border, transparent);
   font-family: inherit;
   cursor: pointer;
 }
@@ -141,6 +146,7 @@ option::checkmark {
 .display_color {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .color_wrap {
@@ -169,6 +175,6 @@ option::checkmark {
 
 .instructions {
   text-align: center;
-  line-height: 1.25;
+  line-height: 1.5;
   text-transform: none;
 }
