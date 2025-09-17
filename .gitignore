@@ -1,22 +1,10 @@
-# Node modules
 node_modules/
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# OS
+dist/
+.env
+*.log
 .DS_Store
 Thumbs.db
-
-# Editor
 .vscode/
 .idea/
-*.sublime-workspace
-*.sublime-project
-
-# Build output
-dist/
-build/
-.env
+# Ignore OS generated files
+*.swp
