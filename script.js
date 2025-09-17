@@ -34,13 +34,26 @@ function createColorBox(bgColor, label) {
     const colorInfo = document.createElement("p");
     colorInfo.innerText = label;
     colorWrap.append(colorDiv, colorInfo);
+
+    // Add click event to copy hex code to clipboard
+    colorWrap.addEventListener("click", () => {
+        navigator.clipboard.writeText(label)
+            .then(() => {
+                // Optionally, provide feedback to the user
+                colorInfo.innerText = "Copied!";
+                setTimeout(() => {
+                    colorInfo.innerText = label;
+                }, 1000);
+            });
+    });
+
     return colorWrap;
 }
 
 function displayColors(colors) {
     colorContainer.innerHTML = "";
 
-    colorContainer.appendChild(createColorBox(`#${colorHex}`, `#${colorHex} (Base Color)`));
+    colorContainer.appendChild(createColorBox(`#${colorHex}`, `#${colorHex}`));
     colors.forEach(color => {
         colorContainer.appendChild(createColorBox(color.hex.value, color.hex.value));
     });

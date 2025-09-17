@@ -1,38 +1,174 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --background: #f5f5f5;
+  --text-color: #222;
 }
 
 body {
-    font-family: "Inter", sans-serif;
-    min-height: 100vh;
+  font-family: "Inter", sans-serif;
+  min-height: 100vh;
+  background: #1C1C1C;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.color_box {
-    width: 100px;
-    height: 100px;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Light mode styles */
 @media (prefers-color-scheme: light) {
-    body {
-        background: #f5f5f5;
-        color: #222;
-    }
-    /* Add more light mode specific styles here */
+  :root {
+    --background: #f5f5f5;
+    --text-color: #222;
+  }
 }
 
 /* Dark mode styles */
 @media (prefers-color-scheme: dark) {
-    body {
-        background: #181818;
-        color: #eee;
-    }
-    /* Add more dark mode specific styles here */
+  :root {
+    --background: #1F2937;
+    --text-color: #fff;
+    --input-color: #D5D4D8;
+    --btn-bg: #3D4B60
+  }
+}
+
+header {
+  padding: 20px;
+  background: var(--background);
+  color: var(--text-color);
+  text-align: center;
+  max-width: 550px;
+  margin: 0 auto;
+}
+
+.container {
+  padding: 0 0 20px;
+  background: var(--background);
+  color: var(--text-color);
+  max-width: 550px;
+  margin: 0 auto;
+}
+
+.input_color_form {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 24px 15px;
+}
+
+input {
+  cursor: pointer;
+}
+
+select,
+::picker(select) {
+  appearance: base-select;
+}
+
+select {
+  border: 1px solid #D1D5DB;
+  background: var(--background);
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+  padding: 9px 12px;
+  transition: 0.4s;
+  color: var(--input-color);
+  cursor: pointer;
+}
+
+select:hover,
+select:focus {
+  background: #1F293A;
+}
+
+select::picker-icon {
+  color: #999999;
+  transition: 0.4s rotate;
+}
+
+select:open::picker-icon {
+  rotate: 180deg;
+}
+
+::picker(select) {
+  border: none;
+}
+
+option {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  background: var(--background);
+  padding: 9px 12px;
+  color: var(--text-color);
+  transition: 0.4s;
+}
+
+option:first-of-type {
+  border-radius: 6px 6px 0 0;
+}
+
+option:last-of-type {
+  border-radius: 0 0 6px 6px;
+}
+
+option::checkmark {
+  order: 1;
+  margin-left: auto;
+  content: '✓';
+  color: #5A8DFF;
+}
+
+#get_colors_btn {
+  padding: 11px 13px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.33;
+  color: var(--text-color);
+  background: var(--btn-bg);
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  border: 1px solid var(--btn-bg);
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.display_color {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.color_wrap {
+  flex: 1 1 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.color_wrap p, .instructions {
+  padding: 11px 0;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 2.0;
+  color: var(--input-color);
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+}
+
+.color_box {
+  width: 100%;
+  height: 200px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.instructions {
+  text-align: center;
+  line-height: 1.25;
+  text-transform: none;
 }
